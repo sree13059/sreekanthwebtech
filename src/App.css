@@ -1882,14 +1882,14 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 72px;
-    height: 72px;
-    flex: 0 0 72px;
+    width: 46px;
+    height: 46px;
+    flex: 0 0 46px;
     padding: 0;
-    border-radius: 14px;
+    border-radius: 10px;
     background: rgba(246, 248, 245, 0.95);
     border: 1px solid rgba(255, 255, 255, 0.72);
-    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.2);
   }
 
   .navbar-burger:hover,
@@ -1899,14 +1899,14 @@
   }
 
   .bento-grid-icon {
-    width: 40px;
-    height: 40px;
-    gap: 8px;
+    width: 25px;
+    height: 25px;
+    gap: 5px;
   }
 
   .bento-dot {
-    width: 8px;
-    height: 8px;
+    width: 5px;
+    height: 5px;
     background-color: #354154;
   }
 
