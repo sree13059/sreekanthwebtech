@@ -72,10 +72,19 @@ export default function Navbar({ currentTab, setCurrentTab }) {
           className={`navbar-burger ${isOpen ? 'open' : ''}`}
           onClick={() => setIsOpen(!isOpen)}
           aria-label="Toggle Menu"
+          aria-expanded={isOpen}
         >
-          <span className="burger-line"></span>
-          <span className="burger-line"></span>
-          <span className="burger-line"></span>
+          <div className="bento-grid-icon">
+            <span className="bento-dot"></span>
+            <span className="bento-dot"></span>
+            <span className="bento-dot"></span>
+            <span className="bento-dot"></span>
+            <span className="bento-dot"></span>
+            <span className="bento-dot"></span>
+            <span className="bento-dot"></span>
+            <span className="bento-dot"></span>
+            <span className="bento-dot"></span>
+          </div>
         </button>
       </div>
 

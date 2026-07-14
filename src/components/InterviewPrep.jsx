@@ -4,6 +4,7 @@ import Playground from './Playground';
 export default function InterviewPrep() {
   const [activeCategory, setActiveCategory] = useState('html_css');
   const [expandedIndex, setExpandedIndex] = useState(null);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const categories = [
     { id: 'html_css', label: 'HTML & CSS Questions' },
@@ -516,14 +517,35 @@ class Program {
   const handleSelectCategory = (catId) => {
     setActiveCategory(catId);
     setExpandedIndex(null);
+    setIsSidebarOpen(false);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const activeQuestions = questionsData[activeCategory] || [];
 
   return (
     <div className="course-workspace animate-fade-in">
+      {/* Mobile Interview Topics Toggle */}
+      <button
+        className={`mobile-sidebar-toggle ${isSidebarOpen ? 'open' : ''}`}
+        onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+        aria-label="Toggle Interview Topics Menu"
+        aria-expanded={isSidebarOpen}
+      >
+        {isSidebarOpen ? (
+          <span className="close-x">âœ•</span>
+        ) : (
+          <div className="hamburger-three-lines">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+        )}
+        <span className="toggle-label">{isSidebarOpen ? 'Close' : 'Topics'}</span>
+      </button>
+
       {/* Sidebar for categories */}
-      <aside className="course-sidebar glass">
+      <aside className={`course-sidebar glass ${isSidebarOpen ? 'open' : ''}`}>
         <div className="sidebar-header">
           <h3>Interview Prep</h3>
           <p style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>MERN Stack Focus</p>

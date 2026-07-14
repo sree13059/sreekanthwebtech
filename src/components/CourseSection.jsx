@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Playground from './Playground';
 import Quiz from './Quiz';
 
@@ -30,11 +30,20 @@ export default function CourseSection({ courseTitle, lessons = [], activeIndex, 
     <div className="course-workspace animate-fade-in">
       {/* Mobile Sidebar Toggle */}
       <button
-        className="mobile-sidebar-toggle"
+        className={`mobile-sidebar-toggle ${isSidebarOpen ? 'open' : ''}`}
         onClick={() => setIsSidebarOpen(!isSidebarOpen)}
         aria-label="Toggle Lessons Menu"
       >
-        {isSidebarOpen ? '✕ Hide Lessons' : '☰ Show Lessons'}
+        {isSidebarOpen ? (
+          <span className="close-x">✕</span>
+        ) : (
+          <div className="hamburger-three-lines">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+        )}
+        <span className="toggle-label">{isSidebarOpen ? 'Close' : 'Topics'}</span>
       </button>
 
       {/* Sidebar List */}
