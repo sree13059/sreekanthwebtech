@@ -1,10 +1,13 @@
 import { useState } from 'react';
 import Playground from './Playground';
 
-export default function InterviewPrep() {
+export default function InterviewPrep({ onBackHome }) {
   const [activeCategory, setActiveCategory] = useState('html_css');
   const [expandedIndex, setExpandedIndex] = useState(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [selectedLevelFilter, setSelectedLevelFilter] = useState('all');
+  const [activeChallengeIndex, setActiveChallengeIndex] = useState(0);
+  const [leetcodeTheme, setLeetcodeTheme] = useState('dark');
 
   const categories = [
     { id: 'html_css', label: 'HTML & CSS Questions' },
@@ -62,6 +65,25 @@ export default function InterviewPrep() {
   place-items: center;
   height: 100vh;
 }</code></pre>
+        `,
+      },
+      {
+        question: 'Explain CSS Grid vs Flexbox and when to use which.',
+        level: 'Experienced',
+        answer: `
+          <p><strong>Flexbox</strong> is designed for one-dimensional layouts—either a row or a column. It is ideal for aligning items inside components, distributing space, and handling simple dynamic alignments.</p>
+          <p><strong>CSS Grid</strong> is designed for two-dimensional layouts—both rows and columns simultaneously. It is ideal for major page layouts, complex grid structures, and overlapping elements.</p>
+          <div class="note-box">
+            <strong>Summary:</strong> Use Flexbox for component content alignment; use Grid for full page architectures.
+          </div>
+        `,
+      },
+      {
+        question: 'What is the HTML viewport meta tag and why is it important?',
+        level: 'Fresher',
+        answer: `
+          <p>The viewport meta tag (<code>&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;</code>) gives instructions to the browser on how to control the dimensions and scaling of the page.</p>
+          <p>Without it, mobile devices render pages at typical desktop screen widths, scaling them down to fit, making them tiny and unreadable. This tag is critical for responsive design.</p>
         `,
       },
     ],
@@ -140,6 +162,40 @@ console.log(counter()); // 2</code></pre>
           </ol>
         `,
       },
+      {
+        question: 'What is hoisting in JavaScript? Explain with examples.',
+        level: 'Fresher',
+        answer: `
+          <p><strong>Hoisting</strong> is JavaScript's default behavior of moving declarations to the top of the current scope before code execution.</p>
+          <p>Variable declarations using <code>var</code> are hoisted and initialized as <code>undefined</code>. Declarations with <code>let</code> and <code>const</code> are hoisted but not initialized (they remain in the Temporal Dead Zone). Function declarations are fully hoisted with their definitions.</p>
+          <pre><code>console.log(x); // undefined (hoisted)
+var x = 5;
+
+sayHello(); // "Hello!" (fully hoisted)
+function sayHello() {
+  console.log("Hello!");
+}</code></pre>
+        `,
+      },
+      {
+        question: 'What is the difference between synchronous and asynchronous execution in JavaScript?',
+        level: 'Fresher',
+        answer: `
+          <p><strong>Synchronous execution</strong> means code is executed line-by-line in sequential order. Each statement blocks the execution of the next line until it finishes.</p>
+          <p><strong>Asynchronous execution</strong> allows the execution thread to trigger long-running actions (e.g., API requests, timers) and continue processing other operations in parallel. When the async action completes, its callback or promise resolves and runs via the event loop.</p>
+        `,
+      },
+      {
+        question: 'Explain the difference between Map and WeakMap in JavaScript.',
+        level: 'Experienced',
+        answer: `
+          <p>Both are collections of key-value pairs, but have critical differences:</p>
+          <ul>
+            <li><strong>Map:</strong> Keys can be of any type (objects or primitives). It maintains insertion order and doesn't prevent garbage collection of object keys if references are lost.</li>
+            <li><strong>WeakMap:</strong> Keys *must* be objects. The references to keys are held weakly, meaning if there are no other references to the key object, it is automatically garbage-collected, preventing memory leaks.</li>
+          </ul>
+        `,
+      },
     ],
     react: [
       {
@@ -173,6 +229,25 @@ console.log(counter()); // 2</code></pre>
           </ul>
         `,
       },
+      {
+        question: 'What is Virtual DOM and how does React reconcile changes?',
+        level: 'Fresher',
+        answer: `
+          <p>The <strong>Virtual DOM (VDOM)</strong> is a lightweight, in-memory representation of the real DOM. When a component's state changes, React builds a new VDOM tree.</p>
+          <p>React then compares this new tree with the previous VDOM tree using a diffing algorithm (called <strong>Reconciliation</strong>) and updates *only* the specific nodes in the real DOM that actually changed, which is much faster than full page updates.</p>
+        `,
+      },
+      {
+        question: 'Explain state management patterns in React (Context API vs Redux).',
+        level: 'Experienced',
+        answer: `
+          <p>Both manage global state, but suit different cases:</p>
+          <ul>
+            <li><strong>Context API:</strong> Built-in React solution. Best for low-frequency updates like theme selectors, user auth, or settings. High-frequency changes can cause unnecessary re-renders in deep child trees.</li>
+            <li><strong>Redux / Redux Toolkit:</strong> Centralized external store. Uses actions and reducers to update state. Uses selectors to subscribe to specific states, optimizing render performance for complex, large-scale apps with high-frequency updates.</li>
+          </ul>
+        `,
+      },
     ],
     backend_db: [
       {
@@ -199,313 +274,87 @@ console.log(counter()); // 2</code></pre>
           </div>
         `,
       },
+      {
+        question: 'What is REST API and what are the best practices for designing them?',
+        level: 'Fresher',
+        answer: `
+          <p>A <strong>REST API</strong> is an architectural style for designing APIs based on resources, stateless requests, and standard HTTP methods.</p>
+          <p><strong>Best Practices:</strong> Use nouns instead of verbs for endpoints (e.g., <code>/api/books</code> instead of <code>/api/getBooks</code>), use proper HTTP methods (GET, POST, PUT, DELETE), return standard JSON payloads, use HTTP status codes correctly, and implement pagination and versioning.</p>
+        `,
+      },
+      {
+        question: 'Explain MongoDB aggregation pipelines with examples.',
+        level: 'Experienced',
+        answer: `
+          <p>An <strong>Aggregation Pipeline</strong> is a framework for data aggregation in MongoDB modeled on data processing pipelines. Documents enter a multi-stage pipeline that transforms them into aggregated results.</p>
+          <p>Common stages include:</p>
+          <ul>
+            <li><code>$match</code>: Filters documents (similar to WHERE in SQL)</li>
+            <li><code>$group</code>: Groups documents by specified keys and computes calculations (similar to GROUP BY)</li>
+            <li><code>$sort</code>: Sorts documents</li>
+            <li><code>$project</code>: Selects specific fields to output</li>
+          </ul>
+          <pre><code>db.orders.aggregate([
+  { $match: { status: "A" } },
+  { $group: { _id: "$cust_id", total: { $sum: "$amount" } } }
+])</code></pre>
+        `,
+      },
     ],
     challenges: [
       {
         title: 'Challenge 1: Reverse a String',
         level: 'Fresher',
         description: 'Write a function/method that takes a string input and returns the characters in reverse order. Select your programming language from the tabs below to test.',
-        js: `function reverseString(str) {
-  return str.split('').reverse().join('');
-}
-console.log(reverseString("Sreekanth WebTech"));`,
-        java: `public class App {
-    public static String reverseString(String str) {
-        return new StringBuilder(str).reverse().toString();
-    }
-    public static void main(String[] args) {
-        System.out.println(reverseString("Sreekanth WebTech"));
-    }
-}`,
-        python: `def reverse_string(s):
-    return s[::-1]
-
-print(reverse_string("Sreekanth WebTech"))`,
-        dotnet: `using System;
-class Program {
-    static string reverseString(string str) {
-        char[] arr = str.ToCharArray();
-        Array.Reverse(arr);
-        return new string(arr);
-    }
-    static void Main() {
-        Console.WriteLine(reverseString("Sreekanth WebTech"));
-    }
-}`,
+        js: '// Write your JavaScript code here\n',
+        java: '// Write your Java code here\n',
+        python: '# Write your Python code here\n',
+        dotnet: '// Write your .NET (C#) code here\n',
       },
       {
         title: 'Challenge 2: Array Grouping by Property',
         level: 'Junior / Experienced',
         description: 'Group a list of employee objects by their department. Write the logic to transform the list into a categorized mapping.',
-        js: `const employees = [
-  { name: 'Siri', dept: 'Engineering' },
-  { name: 'Ravi', dept: 'Marketing' },
-  { name: 'Kanth', dept: 'Engineering' }
-];
-
-function groupByDept(list) {
-  return list.reduce((acc, obj) => {
-    const key = obj.dept;
-    if (!acc[key]) acc[key] = [];
-    acc[key].push(obj.name);
-    return acc;
-  }, {});
-}
-
-console.log(groupByDept(employees));`,
-        java: `import java.util.*;
-public class App {
-    public static void main(String[] args) {
-        // Run to view grouping results
-        System.out.println("groupByDept result compiled successfully.");
-    }
-}`,
-        python: `def group_by_dept(employees):
-    res = {}
-    for emp in employees:
-        dept = emp['dept']
-        if dept not in res:
-            res[dept] = []
-        res[dept].append(emp['name'])
-    return res
-
-print(group_by_dept([
-    {"name": "Siri", "dept": "Engineering"},
-    {"name": "Ravi", "dept": "Marketing"},
-    {"name": "Kanth", "dept": "Engineering"}
-]))`,
-        dotnet: `using System;
-class Program {
-    static void Main() {
-        Console.WriteLine("groupByDept result compiled successfully.");
-    }
-}`,
+        js: '// Write your JavaScript code here\n',
+        java: '// Write your Java code here\n',
+        python: '# Write your Python code here\n',
+        dotnet: '// Write your .NET (C#) code here\n',
       },
       {
         title: 'Challenge 3: The FizzBuzz Algorithm',
         level: 'Fresher',
         description: 'Write a function that outputs "Fizz" for multiples of 3, "Buzz" for multiples of 5, "FizzBuzz" for multiples of both, and the number itself otherwise.',
-        js: `function fizzBuzz(num) {
-  if (num % 3 === 0 && num % 5 === 0) return 'FizzBuzz';
-  if (num % 3 === 0) return 'Fizz';
-  if (num % 5 === 0) return 'Buzz';
-  return num;
-}
-
-const testNumbers = [3, 5, 15, 7];
-testNumbers.forEach(n => console.log(\`Number \${n} -> \${fizzBuzz(n)}\`));`,
-        java: `public class App {
-    public static String fizzBuzz(int num) {
-        if (num % 3 == 0 && num % 5 == 0) return "FizzBuzz";
-        if (num % 3 == 0) return "Fizz";
-        if (num % 5 == 0) return "Buzz";
-        return String.valueOf(num);
-    }
-    public static void main(String[] args) {
-        int[] test = {3, 5, 15, 7};
-        for (int n : test) {
-            System.out.println("Number " + n + " -> " + fizzBuzz(n));
-        }
-    }
-}`,
-        python: `def fizz_buzz(num):
-    if num % 3 == 0 and num % 5 == 0: return 'FizzBuzz'
-    if num % 3 == 0: return 'Fizz'
-    if num % 5 == 0: return 'Buzz'
-    return num
-
-for n in [3, 5, 15, 7]:
-    print(f"Number {n} -> {fizz_buzz(n)}")`,
-        dotnet: `using System;
-class Program {
-    static string fizzBuzz(int num) {
-        if (num % 3 == 0 && num % 5 == 0) return "FizzBuzz";
-        if (num % 3 == 0) return "Fizz";
-        if (num % 5 == 0) return "Buzz";
-        return num.ToString();
-    }
-    static void Main() {
-        int[] test = {3, 5, 15, 7};
-        foreach (int n in test) {
-            Console.WriteLine("Number " + n + " -> " + fizzBuzz(n));
-        }
-    }
-}`,
+        js: '// Write your JavaScript code here\n',
+        java: '// Write your Java code here\n',
+        python: '# Write your Python code here\n',
+        dotnet: '// Write your .NET (C#) code here\n',
       },
       {
         title: 'Challenge 4: Palindrome Checker',
         level: 'Junior Developer',
         description: 'Verify if a string reads the same forwards and backwards, ignoring casing, spacing, and special characters.',
-        js: `function isPalindrome(str) {
-  const cleanStr = str.toLowerCase().replace(/[^a-z0-9]/g, '');
-  const reversed = cleanStr.split('').reverse().join('');
-  return cleanStr === reversed;
-}
-
-const words = ["Racecar", "hello", "A man a plan a canal Panama"];
-words.forEach(w => console.log(\`"\${w}" is Palindrome? -> \${isPalindrome(w)}\`));`,
-        java: `public class App {
-    public static boolean isPalindrome(String str) {
-        String clean = str.toLowerCase().replaceAll("[^a-z0-9]", "");
-        String rev = new StringBuilder(clean).reverse().toString();
-        return clean.equals(rev);
-    }
-    public static void main(String[] args) {
-        String[] words = {"Racecar", "hello", "A man a plan a canal Panama"};
-        for (String w : words) {
-            System.out.println("\\"" + w + "\\" is Palindrome? -> " + isPalindrome(w));
-        }
-    }
-}`,
-        python: `import re
-def is_palindrome(s):
-    clean = re.sub(r'[^a-z0-9]', '', s.lower())
-    return clean == clean[::-1]
-
-for w in ["Racecar", "hello", "A man a plan a canal Panama"]:
-    print(f'"{w}" is Palindrome? -> {is_palindrome(w)}')`,
-        dotnet: `using System;
-using System.Text.RegularExpressions;
-class Program {
-    static bool isPalindrome(string str) {
-        string clean = Regex.Replace(str.ToLower(), "[^a-z0-9]", "");
-        char[] arr = clean.ToCharArray();
-        Array.Reverse(arr);
-        return clean == new string(arr);
-    }
-    static void Main() {
-        string[] words = {"Racecar", "hello", "A man a plan a canal Panama"};
-        foreach (string w in words) {
-            Console.WriteLine("\\"" + w + "\\" is Palindrome? -> " + isPalindrome(w));
-        }
-    }
-}`,
+        js: '// Write your JavaScript code here\n',
+        java: '// Write your Java code here\n',
+        python: '# Write your Python code here\n',
+        dotnet: '// Write your .NET (C#) code here\n',
       },
       {
         title: 'Challenge 5: Find the Largest Number in an Array',
         level: 'Fresher',
         description: 'Find the largest number in a numeric list without using pre-built maximum comparison methods.',
-        js: `function findMax(arr) {
-  if (arr.length === 0) return null;
-  let max = arr[0];
-  for (let i = 1; i < arr.length; i++) {
-    if (arr[i] > max) max = arr[i];
-  }
-  return max;
-}
-
-const nums = [12, 45, 2, 89, 34, 11];
-console.log(\`Array: [\${nums.join(', ')}]\`);
-console.log(\`Maximum Value calculated: \${findMax(nums)}\`);`,
-        java: `public class App {
-    public static int findMax(int[] arr) {
-        int max = arr[0];
-        for (int i = 1; i < arr.length; i++) {
-            if (arr[i] > max) max = arr[i];
-        }
-        return max;
-    }
-    public static void main(String[] args) {
-        int[] nums = {12, 45, 2, 89, 34, 11};
-        System.out.println("Array: [12, 45, 2, 89, 34, 11]");
-        System.out.println("Maximum Value calculated: " + findMax(nums));
-    }
-}`,
-        python: `def find_max(arr):
-    if len(arr) == 0: return None
-    max_val = arr[0]
-    for num in arr[1:]:
-        if num > max_val:
-            max_val = num
-    return max_val
-
-nums = [12, 45, 2, 89, 34, 11]
-print("Array: [12, 45, 2, 89, 34, 11]")
-print(f"Maximum Value calculated: {find_max(nums)}")`,
-        dotnet: `using System;
-class Program {
-    static int findMax(int[] arr) {
-        int max = arr[0];
-        for (int i = 1; i < arr.Length; i++) {
-            if (arr[i] > max) max = arr[i];
-        }
-        return max;
-    }
-    static void Main() {
-        int[] nums = {12, 45, 2, 89, 34, 11};
-        Console.WriteLine("Array: [12, 45, 2, 89, 34, 11]");
-        Console.WriteLine("Maximum Value calculated: " + findMax(nums));
-    }
-}`,
+        js: '// Write your JavaScript code here\n',
+        java: '// Write your Java code here\n',
+        python: '# Write your Python code here\n',
+        dotnet: '// Write your .NET (C#) code here\n',
       },
       {
         title: 'Challenge 6: Find Duplicates in an Array',
         level: 'Junior / Experienced',
         description: 'Parse an array and return a list containing only the values that appear more than once.',
-        js: `function findDuplicates(arr) {
-  const seen = new Set();
-  const duplicates = new Set();
-  for (const num of arr) {
-    if (seen.has(num)) duplicates.add(num);
-    else seen.add(num);
-  }
-  return Array.from(duplicates);
-}
-
-const list = [1, 2, 3, 2, 4, 5, 3, 6, 1];
-console.log(\`Original List: [\${list.join(', ')}]\`);
-console.log(\`Duplicate elements found: [\${findDuplicates(list).join(', ')}]\`);`,
-        java: `import java.util.*;
-public class App {
-    public static List<Integer> findDuplicates(int[] arr) {
-        Set<Integer> seen = new HashSet<>();
-        List<Integer> dups = new ArrayList<>();
-        for (int num : arr) {
-            if (seen.contains(num)) {
-                if (!dups.contains(num)) dups.add(num);
-            } else {
-                seen.add(num);
-            }
-        }
-        return dups;
-    }
-    public static void main(String[] args) {
-        int[] list = {1, 2, 3, 2, 4, 5, 3, 6, 1};
-        System.out.println("Original List: [1, 2, 3, 2, 4, 5, 3, 6, 1]");
-        System.out.println("Duplicate elements found: " + findDuplicates(list));
-    }
-}`,
-        python: `def find_duplicates(arr):
-    seen = set()
-    dups = set()
-    for num in arr:
-        if num in seen:
-            dups.add(num)
-        else:
-            seen.add(num)
-    return list(dups)
-
-list_val = [1, 2, 3, 2, 4, 5, 3, 6, 1]
-print("Original List: [1, 2, 3, 2, 4, 5, 3, 6, 1]")
-print(f"Duplicate elements found: {find_duplicates(list_val)}")`,
-        dotnet: `using System;
-using System.Collections.Generic;
-class Program {
-    static List<int> findDuplicates(int[] arr) {
-        HashSet<int> seen = new HashSet<int>();
-        HashSet<int> dups = new HashSet<int>();
-        foreach (int num in arr) {
-            if (seen.Contains(num)) dups.Add(num);
-            else seen.Add(num);
-        }
-        return new List<int>(dups);
-    }
-    static void Main() {
-        int[] list = {1, 2, 3, 2, 4, 5, 3, 6, 1};
-        Console.WriteLine("Original List: [1, 2, 3, 2, 4, 5, 3, 6, 1]");
-        Console.WriteLine("Duplicate elements found: [" + string.Join(", ", findDuplicates(list)) + "]");
-    }
-}`,
+        js: '// Write your JavaScript code here\n',
+        java: '// Write your Java code here\n',
+        python: '# Write your Python code here\n',
+        dotnet: '// Write your .NET (C#) code here\n',
       },
     ],
   };
@@ -517,11 +366,24 @@ class Program {
   const handleSelectCategory = (catId) => {
     setActiveCategory(catId);
     setExpandedIndex(null);
+    setSelectedLevelFilter('all');
+    setActiveChallengeIndex(0);
     setIsSidebarOpen(false);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const activeQuestions = questionsData[activeCategory] || [];
+  const allActiveQuestions = questionsData[activeCategory] || [];
+  const activeQuestions = allActiveQuestions.filter((q) => {
+    if (selectedLevelFilter === 'all') return true;
+    const lvl = q.level.toLowerCase();
+    if (selectedLevelFilter === 'fresher') {
+      return lvl.includes('fresher') || lvl.includes('junior');
+    }
+    if (selectedLevelFilter === 'experienced') {
+      return lvl.includes('experienced') || lvl.includes('senior');
+    }
+    return true;
+  });
 
   return (
     <div className="course-workspace animate-fade-in">
@@ -547,6 +409,11 @@ class Program {
       {/* Sidebar for categories */}
       <aside className={`course-sidebar glass ${isSidebarOpen ? 'open' : ''}`}>
         <div className="sidebar-header">
+          {onBackHome && (
+            <button className="back-home-btn" onClick={onBackHome}>
+              ← Back to Home
+            </button>
+          )}
           <h3>Interview Prep</h3>
           <p style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>MERN Stack Focus</p>
         </div>
@@ -568,7 +435,7 @@ class Program {
       {/* Main Panel */}
       <main className="course-main-content">
         <div className="course-breadcrumbs">
-          <span>Home</span>
+          <span className={onBackHome ? "crumb-link" : ""} onClick={onBackHome}>Home</span>
           <span className="crumb-divider">/</span>
           <span className="crumb-current">Interview Preparation</span>
           <span className="crumb-divider">/</span>
@@ -587,28 +454,234 @@ class Program {
           </p>
         </section>
 
+        {/* Level Filter Bar */}
+        <div className="level-filter-bar glass">
+          <button
+            className={`filter-tab ${selectedLevelFilter === 'all' ? 'active' : ''}`}
+            onClick={() => {
+              setSelectedLevelFilter('all');
+              setExpandedIndex(null);
+            }}
+          >
+            All Levels
+          </button>
+          <button
+            className={`filter-tab ${selectedLevelFilter === 'fresher' ? 'active' : ''}`}
+            onClick={() => {
+              setSelectedLevelFilter('fresher');
+              setExpandedIndex(null);
+            }}
+          >
+            🎓 Fresher / Junior
+          </button>
+          <button
+            className={`filter-tab ${selectedLevelFilter === 'experienced' ? 'active' : ''}`}
+            onClick={() => {
+              setSelectedLevelFilter('experienced');
+              setExpandedIndex(null);
+            }}
+          >
+            💼 Experienced / Senior
+          </button>
+        </div>
+
         {/* Challenge Coding Playground Layout */}
         {activeCategory === 'challenges' ? (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
-            {activeQuestions.map((challenge, idx) => (
-              <div key={idx} className="challenge-item-card glass" style={{ padding: '24px', borderRadius: '16px' }}>
-                <span className={`difficulty-badge badge-${challenge.level.toLowerCase().replace(/[^a-z]/g, '')}`} style={{ marginBottom: '10px' }}>
-                  {challenge.level}
-                </span>
-                <h3 style={{ color: 'white', marginBottom: '8px' }}>{challenge.title}</h3>
-                <p style={{ color: 'var(--text-muted)', marginBottom: '18px' }} dangerouslySetInnerHTML={{ __html: challenge.description }} />
-                
-                <Playground
-                  mode="interview"
-                  initialJs={challenge.js}
-                  initialJava={challenge.java}
-                  initialPython={challenge.python}
-                  initialDotnet={challenge.dotnet}
-                  lessonTitle={challenge.title}
-                />
+          (() => {
+            const activeChallenge = activeQuestions[activeChallengeIndex] || activeQuestions[0] || {};
+            if (!activeChallenge.title) return <div className="glass" style={{ padding: '24px', color: 'var(--text-muted)' }}>No challenges available.</div>;
+            return (
+              <div className={`leetcode-container theme-${leetcodeTheme}`}>
+                {/* Header Control Bar */}
+                <div className="leetcode-header">
+                  <div className="leetcode-header-left">
+                    <button className="leetcode-btn leetcode-btn-secondary" style={{ fontSize: '1.1rem' }}>
+                      💻
+                    </button>
+                    <select
+                      className="leetcode-dropdown"
+                      value={activeChallengeIndex}
+                      onChange={(e) => setActiveChallengeIndex(Number(e.target.value))}
+                    >
+                      {activeQuestions.map((ch, idx) => (
+                        <option key={idx} value={idx}>
+                          {ch.title.split(':')[0]}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div className="leetcode-header-center">
+                    <button
+                      className="leetcode-btn leetcode-btn-secondary"
+                      disabled={activeChallengeIndex === 0}
+                      onClick={() => setActiveChallengeIndex((prev) => Math.max(0, prev - 1))}
+                      title="Previous Challenge"
+                    >
+                      ‹ Prev
+                    </button>
+                    <span style={{ fontSize: '0.88rem', fontWeight: 'bold' }}>
+                      {activeChallengeIndex + 1} / {activeQuestions.length}
+                    </span>
+                    <button
+                      className="leetcode-btn leetcode-btn-secondary"
+                      disabled={activeChallengeIndex === activeQuestions.length - 1}
+                      onClick={() => setActiveChallengeIndex((prev) => Math.min(activeQuestions.length - 1, prev + 1))}
+                      title="Next Challenge"
+                    >
+                      Next ›
+                    </button>
+                  </div>
+
+                  <div className="leetcode-header-right">
+                    <button
+                      className="leetcode-btn leetcode-btn-secondary"
+                      onClick={() => setLeetcodeTheme((prev) => (prev === 'dark' ? 'light' : 'dark'))}
+                      title="Toggle Dark/Light Theme"
+                    >
+                      {leetcodeTheme === 'dark' ? '☀️ Light Mode' : '🌙 Dark Mode'}
+                    </button>
+                  </div>
+                </div>
+
+                {/* Split Workspace */}
+                <div className="leetcode-split-pane">
+                  {/* Left Column: Description Pane */}
+                  <div className="leetcode-desc-pane">
+                    <div className="leetcode-meta-row">
+                      <span className={`difficulty-badge badge-${activeChallenge.level?.toLowerCase().replace(/[^a-z]/g, '') || 'fresher'}`}>
+                        {activeChallenge.level}
+                      </span>
+                      <span className="leetcode-tag">Topics</span>
+                      <span className="leetcode-tag">Company Tags</span>
+                    </div>
+
+                    <h3 className="leetcode-desc-pane-title">{activeChallenge.title}</h3>
+
+                    <p
+                      className="leetcode-desc-text"
+                      dangerouslySetInnerHTML={{ __html: activeChallenge.description }}
+                    />
+
+                    {/* Styled LeetCode Examples */}
+                    {activeChallenge.title?.includes('Challenge 1') && (
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', marginTop: '10px' }}>
+                        <div className="leetcode-example-card">
+                          <strong>Example 1:</strong>
+                          <br />
+                          Input: str = "hello"
+                          <br />
+                          Output: "olleh"
+                        </div>
+                        <div className="leetcode-example-card">
+                          <strong>Example 2:</strong>
+                          <br />
+                          Input: str = "Sreekanth WebTech"
+                          <br />
+                          Output: "hcetbeW htnakeerS"
+                        </div>
+                      </div>
+                    )}
+
+                    {activeChallenge.title?.includes('Challenge 2') && (
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', marginTop: '10px' }}>
+                        <div className="leetcode-example-card">
+                          <strong>Example 1:</strong>
+                          <br />
+                          Input: employees = [
+  {"{ name: 'Siri', dept: 'Engineering' }"},
+  {"{ name: 'Ravi', dept: 'Marketing' }"},
+  {"{ name: 'Kanth', dept: 'Engineering' }"}
+]
+                          <br />
+                          Output: {"{ Engineering: ['Siri', 'Kanth'], Marketing: ['Ravi'] }"}
+                        </div>
+                      </div>
+                    )}
+
+                    {activeChallenge.title?.includes('Challenge 3') && (
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', marginTop: '10px' }}>
+                        <div className="leetcode-example-card">
+                          <strong>Example 1:</strong>
+                          <br />
+                          Input: num = 3
+                          <br />
+                          Output: "Fizz"
+                        </div>
+                        <div className="leetcode-example-card">
+                          <strong>Example 2:</strong>
+                          <br />
+                          Input: num = 15
+                          <br />
+                          Output: "FizzBuzz"
+                        </div>
+                      </div>
+                    )}
+
+                    {activeChallenge.title?.includes('Challenge 4') && (
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', marginTop: '10px' }}>
+                        <div className="leetcode-example-card">
+                          <strong>Example 1:</strong>
+                          <br />
+                          Input: str = "Racecar"
+                          <br />
+                          Output: true
+                        </div>
+                        <div className="leetcode-example-card">
+                          <strong>Example 2:</strong>
+                          <br />
+                          Input: str = "hello"
+                          <br />
+                          Output: false
+                        </div>
+                      </div>
+                    )}
+
+                    {activeChallenge.title?.includes('Challenge 5') && (
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', marginTop: '10px' }}>
+                        <div className="leetcode-example-card">
+                          <strong>Example 1:</strong>
+                          <br />
+                          Input: arr = [12, 45, 2, 89, 34, 11]
+                          <br />
+                          Output: 89
+                        </div>
+                      </div>
+                    )}
+
+                    {activeChallenge.title?.includes('Challenge 6') && (
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', marginTop: '10px' }}>
+                        <div className="leetcode-example-card">
+                          <strong>Example 1:</strong>
+                          <br />
+                          Input: arr = [1, 2, 3, 2, 4, 5, 3, 6, 1]
+                          <br />
+                          Output: [1, 2, 3]
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Right Column: Code Editor Pane */}
+                  <div className="leetcode-editor-pane">
+                    {activeChallenge.title && (
+                      <Playground
+                        key={`${activeChallengeIndex}_${leetcodeTheme}`}
+                        mode="interview"
+                        layout="leetcode"
+                        theme={leetcodeTheme}
+                        initialJs={activeChallenge.js}
+                        initialJava={activeChallenge.java}
+                        initialPython={activeChallenge.python}
+                        initialDotnet={activeChallenge.dotnet}
+                        lessonTitle={activeChallenge.title}
+                      />
+                    )}
+                  </div>
+                </div>
               </div>
-            ))}
-          </div>
+            );
+          })()
         ) : (
           /* Expandable Questions List */
           <div className="interview-questions-list" style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>

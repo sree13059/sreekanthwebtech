@@ -2,6 +2,8 @@ import { useState, useEffect, useRef } from 'react';
 
 export default function Playground({
   mode = 'course', // 'course' or 'interview'
+  layout = 'normal', // 'normal' or 'leetcode'
+  theme = 'dark', // 'dark' or 'light'
   lessonTitle = '',
   initialHtml = '',
   initialCss = '',
@@ -86,131 +88,155 @@ export default function Playground({
 
     setTimeout(() => {
       if (activeTab === 'javascript') {
-        let logs = [];
-        const originalLog = console.log;
-        console.log = (...args) => {
-          logs.push(args.map(arg => typeof arg === 'object' ? JSON.stringify(arg) : arg).join(' '));
-        };
-        try {
-          const runFn = new Function(jsCode);
-          runFn();
-          console.log = originalLog;
-          setConsoleOutput(logs.join('\n') || '[JS Engine] Code executed successfully.\n(No console.log output triggers)');
-        } catch (err) {
-          console.log = originalLog;
-          setConsoleOutput(`[JS Runtime Error]\n-----------------\n${err.message}`);
-        }
+        setConsoleOutput(runJavascriptTestCases(jsCode, lessonTitle));
       } else if (activeTab === 'python') {
-        setConsoleOutput(runPythonMock(pythonCode));
+        setConsoleOutput(runMockLanguageTestCases(pythonCode, 'python', lessonTitle));
       } else if (activeTab === 'java') {
-        setConsoleOutput(runJavaMock(javaCode));
+        setConsoleOutput(runMockLanguageTestCases(javaCode, 'java', lessonTitle));
       } else if (activeTab === 'dotnet') {
-        setConsoleOutput(runDotnetMock(dotnetCode));
+        setConsoleOutput(runMockLanguageTestCases(dotnetCode, 'dotnet', lessonTitle));
       }
     }, 400);
   };
 
-  const runPythonMock = (code) => {
-    let outputs = ['[Python Runner] executing script...', '-------------------------------'];
-    const lines = code.split('\n');
-    lines.forEach(line => {
-      const trimmed = line.trim();
-      if (trimmed.startsWith('print(')) {
-        const match = trimmed.match(/print\((.*)\)/);
-        if (match && match[1]) {
-          let val = match[1].trim();
-          if ((val.startsWith('"') && val.endsWith('"')) || (val.startsWith("'") && val.endsWith("'"))) {
-            outputs.push(val.substring(1, val.length - 1));
-          } else {
-            // Match challenge output patterns
-            if (val.includes('reverseString') || val.includes('reverse_string')) {
-              outputs.push('Solution output: htnakeerS beWhtnakeerS');
-            } else if (val.includes('groupByDept') || val.includes('group_by_dept')) {
-              outputs.push('{\n  "Engineering": ["Siri", "Kanth"],\n  "Marketing": ["Ravi"]\n}');
-            } else if (val.includes('fizzBuzz') || val.includes('fizz_buzz')) {
-              outputs.push('Number 3 -> Fizz\nNumber 5 -> Buzz\nNumber 15 -> FizzBuzz\nNumber 7 -> 7');
-            } else if (val.includes('isPalindrome') || val.includes('is_palindrome')) {
-              outputs.push('"Racecar" is Palindrome? -> true\n"hello" is Palindrome? -> false\n"A man a plan a canal Panama" is Palindrome? -> true');
-            } else if (val.includes('findMax') || val.includes('find_max')) {
-              outputs.push('Array: [12, 45, 2, 89, 34, 11]\nMaximum Value calculated: 89');
-            } else if (val.includes('findDuplicates') || val.includes('find_duplicates')) {
-              outputs.push('Original List: [1, 2, 3, 2, 4, 5, 3, 6, 1]\nDuplicate elements found: [2, 3, 1]');
-            } else {
-              outputs.push(`Computed: ${val}`);
-            }
-          }
-        }
-      }
-    });
-    return outputs.join('\n');
+  const checkChallengeMatch = (output, challengeTitle) => {
+    if (!output) return false;
+    const lowerOutput = output.toLowerCase();
+    
+    if (challengeTitle.includes('Challenge 1')) {
+      return lowerOutput.includes('olleh') || lowerOutput.includes('hcetbew htnakeers') || lowerOutput.includes('tcaer');
+    }
+    if (challengeTitle.includes('Challenge 2')) {
+      return lowerOutput.includes('engineering') && lowerOutput.includes('marketing') && lowerOutput.includes('siri') && lowerOutput.includes('kanth');
+    }
+    if (challengeTitle.includes('Challenge 3')) {
+      return lowerOutput.includes('fizz') || lowerOutput.includes('buzz') || lowerOutput.includes('fizzbuzz');
+    }
+    if (challengeTitle.includes('Challenge 4')) {
+      return lowerOutput.includes('true') || lowerOutput.includes('false');
+    }
+    if (challengeTitle.includes('Challenge 5')) {
+      return lowerOutput.includes('89') || lowerOutput.includes('-2');
+    }
+    if (challengeTitle.includes('Challenge 6')) {
+      return lowerOutput.includes('1') && lowerOutput.includes('2') && lowerOutput.includes('3');
+    }
+    return true;
   };
 
-  const runJavaMock = (code) => {
-    let outputs = ['[Java VM Compiler] Compiling App.java...', '[Java VM] Running class App...', '-------------------------------'];
-    const lines = code.split('\n');
-    lines.forEach(line => {
-      const trimmed = line.trim();
-      if (trimmed.includes('System.out.println(')) {
-        const match = trimmed.match(/System\.out\.println\((.*)\)/);
-        if (match && match[1]) {
-          let val = match[1].trim();
-          if ((val.startsWith('"') && val.endsWith('"')) || (val.startsWith("'") && val.endsWith("'"))) {
-            outputs.push(val.substring(1, val.length - 1));
-          } else {
-            if (val.includes('reverseString')) {
-              outputs.push('Solution output: htnakeerS beWhtnakeerS');
-            } else if (val.includes('groupByDept')) {
-              outputs.push('{\n  "Engineering": ["Siri", "Kanth"],\n  "Marketing": ["Ravi"]\n}');
-            } else if (val.includes('fizzBuzz')) {
-              outputs.push('Number 3 -> Fizz\nNumber 5 -> Buzz\nNumber 15 -> FizzBuzz\nNumber 7 -> 7');
-            } else if (val.includes('isPalindrome')) {
-              outputs.push('"Racecar" is Palindrome? -> true\n"hello" is Palindrome? -> false\n"A man a plan a canal Panama" is Palindrome? -> true');
-            } else if (val.includes('findMax')) {
-              outputs.push('Array: [12, 45, 2, 89, 34, 11]\nMaximum Value calculated: 89');
-            } else if (val.includes('findDuplicates')) {
-              outputs.push('Original List: [1, 2, 3, 2, 4, 5, 3, 6, 1]\nDuplicate elements found: [2, 3, 1]');
-            } else {
-              outputs.push(`Output: ${val}`);
-            }
-          }
-        }
+  const runJavascriptTestCases = (userCode, challengeTitle) => {
+    let outputLines = [];
+
+    // Check if userCode is empty or only comments
+    const cleanedCode = userCode.replace(/\/\*[\s\S]*?\*\/|\/\/.*/g, '').trim();
+    if (!cleanedCode) {
+      return 'Error: No code written in the editor. Please write some JavaScript code to run.';
+    }
+
+    let runnerCode = `
+      let __logs = [];
+      const console = {
+        log: (...args) => __logs.push(args.map(x => typeof x === 'object' ? JSON.stringify(x) : String(x)).join(' ')),
+        error: (...args) => __logs.push('Error: ' + args.join(' ')),
+        warn: (...args) => __logs.push('Warning: ' + args.join(' ')),
+        info: (...args) => __logs.push('Info: ' + args.join(' '))
+      };
+      const document = {
+        write: (...args) => __logs.push(args.join(' ')),
+        writeln: (...args) => __logs.push(args.join(' ') + '\\n')
+      };
+      
+      try {
+        ${userCode}
+      } catch (err) {
+        __logs.push('Runtime Error: ' + err.message);
       }
-    });
-    return outputs.join('\n');
+      return __logs;
+    `;
+
+    try {
+      const runFn = new Function(runnerCode);
+      const logs = runFn() || [];
+      if (logs.length === 0) {
+        return 'Code compiled and ran successfully, but produced no console outputs or document writes.';
+      }
+      const actualOutput = logs.map(log => log.replace(/<br\s*\/?>/gi, '\n')).join('\n');
+      const isMatch = checkChallengeMatch(actualOutput, challengeTitle);
+      
+      let finalResult = actualOutput;
+      finalResult += '\n----------------------------------------------\n';
+      if (isMatch) {
+        finalResult += 'Result: Output matches the expected challenge solution! ✅';
+      } else {
+        finalResult += 'Result: Output does not match the expected challenge solution (notmatch) ❌';
+      }
+      return finalResult;
+    } catch (err) {
+      return `Syntax Error during compilation:\nError: ${err.message}`;
+    }
   };
 
-  const runDotnetMock = (code) => {
-    let outputs = ['[.NET CLR Compiler] Building Program.csproj...', '[.NET CLR Engine] Running Program.exe...', '-------------------------------'];
-    const lines = code.split('\n');
+  const runMockLanguageTestCases = (userCode, activeLanguage, challengeTitle) => {
+    let outputLines = [];
+    const langLabel = activeLanguage === 'python' ? 'Python 3' : activeLanguage === 'java' ? 'Java VM' : '.NET CLR';
+    outputLines.push(`[${langLabel} Mock compiler] Compiling and running code...`);
+    
+    // Check if userCode is empty
+    const cleanedCode = userCode.replace(/\/\*[\s\S]*?\*\/|\/\/.*/g, '').trim();
+    if (!cleanedCode) {
+      return `Error: No code written in the editor. Please write some ${langLabel} code.`;
+    }
+
+    outputLines.push('Execution Successful! Outputs:');
+    
+    // Parse print/Console.WriteLine statements inside the user's mock code
+    const lines = userCode.split('\n');
+    let hasOutput = false;
     lines.forEach(line => {
-      const trimmed = line.trim();
-      if (trimmed.includes('Console.WriteLine(')) {
-        const match = trimmed.match(/Console\.WriteLine\((.*)\)/);
-        if (match && match[1]) {
-          let val = match[1].trim();
-          if ((val.startsWith('"') && val.endsWith('"')) || (val.startsWith("'") && val.endsWith("'"))) {
-            outputs.push(val.substring(1, val.length - 1));
-          } else {
-            if (val.includes('reverseString')) {
-              outputs.push('Solution output: htnakeerS beWhtnakeerS');
-            } else if (val.includes('groupByDept')) {
-              outputs.push('{\n  "Engineering": ["Siri", "Kanth"],\n  "Marketing": ["Ravi"]\n}');
-            } else if (val.includes('fizzBuzz')) {
-              outputs.push('Number 3 -> Fizz\nNumber 5 -> Buzz\nNumber 15 -> FizzBuzz\nNumber 7 -> 7');
-            } else if (val.includes('isPalindrome')) {
-              outputs.push('"Racecar" is Palindrome? -> true\n"hello" is Palindrome? -> false\n"A man a plan a canal Panama" is Palindrome? -> true');
-            } else if (val.includes('findMax')) {
-              outputs.push('Array: [12, 45, 2, 89, 34, 11]\nMaximum Value calculated: 89');
-            } else if (val.includes('findDuplicates')) {
-              outputs.push('Original List: [1, 2, 3, 2, 4, 5, 3, 6, 1]\nDuplicate elements found: [2, 3, 1]');
-            } else {
-              outputs.push(`Output: ${val}`);
-            }
-          }
+      // Look for print(...) in Python
+      if (activeLanguage === 'python') {
+        const pyPrintMatch = line.match(/print\s*\((.*)\)/);
+        if (pyPrintMatch) {
+          const val = pyPrintMatch[1].trim().replace(/^['"]|['"]$/g, '');
+          outputLines.push(`  ${val}`);
+          hasOutput = true;
+        }
+      }
+      // Look for System.out.println(...) in Java
+      else if (activeLanguage === 'java') {
+        const javaPrintMatch = line.match(/System\.out\.println\s*\((.*)\)/);
+        if (javaPrintMatch) {
+          const val = javaPrintMatch[1].trim().replace(/^['"]|['"]$/g, '');
+          outputLines.push(`  ${val}`);
+          hasOutput = true;
+        }
+      }
+      // Look for Console.WriteLine(...) in .NET
+      else if (activeLanguage === 'dotnet') {
+        const dotnetPrintMatch = line.match(/Console\.WriteLine\s*\((.*)\)/);
+        if (dotnetPrintMatch) {
+          const val = dotnetPrintMatch[1].trim().replace(/^['"]|['"]$/g, '');
+          outputLines.push(`  ${val}`);
+          hasOutput = true;
         }
       }
     });
-    return outputs.join('\n');
+
+    if (!hasOutput) {
+      outputLines.push('  (Code ran successfully but returned no print outputs.)');
+    }
+
+    const actualOutput = outputLines.join('\n');
+    const isMatch = checkChallengeMatch(actualOutput, challengeTitle);
+    
+    let finalResult = actualOutput;
+    finalResult += '\n----------------------------------------------\n';
+    if (isMatch) {
+      finalResult += 'Result: Output matches the expected challenge solution! ✅';
+    } else {
+      finalResult += 'Result: Output does not match the expected challenge solution (notmatch) ❌';
+    }
+    return finalResult;
   };
 
   const resetTemplate = () => {
@@ -225,25 +251,38 @@ export default function Playground({
       setDotnetCode(initialDotnet);
     }
     setConsoleOutput('Click "Run Output" to run the code and check terminal results.');
+    setShowOutput(false);
     setIframeKey((prev) => prev + 1);
   };
 
   return (
-    <div className="playground-container glass">
+    <div className={`playground-container ${layout === 'leetcode' ? '' : 'glass'}`}>
       <div className="playground-header">
         <div className="playground-title-group">
-          <span className="playground-badge">{mode === 'interview' ? 'Interview Console' : 'Playground'}</span>
-          <h4 className="playground-lesson-title">Try it Yourself: {lessonTitle}</h4>
+          {layout === 'leetcode' ? (
+            <span className="playground-badge" style={{ background: theme === 'light' ? '#6366f1' : 'var(--primary-teal)', color: theme === 'light' ? 'white' : '#0f172a', marginBottom: 0 }}>
+              {activeTab.toUpperCase()} CODE
+            </span>
+          ) : (
+            <>
+              <span className="playground-badge">{mode === 'interview' ? 'Interview Console' : 'Playground'}</span>
+              <h4 className="playground-lesson-title">Try it Yourself: {lessonTitle}</h4>
+            </>
+          )}
         </div>
         <div className="playground-actions">
           <button className="playground-reset-btn" onClick={resetTemplate}>
-            Reset Code
+            {layout === 'leetcode' ? 'Reset' : 'Reset Code'}
           </button>
-          <button className="playground-run-btn" onClick={runCode}>
+          <button
+            className="playground-run-btn"
+            onClick={runCode}
+            style={layout === 'leetcode' && theme === 'light' ? { background: '#6366f1', color: 'white', boxShadow: 'none' } : {}}
+          >
             <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16">
               <path d="M8 5v14l11-7z" />
             </svg>
-            Run Output
+            {layout === 'leetcode' ? 'Run Code' : 'Run Output'}
           </button>
         </div>
       </div>
@@ -390,24 +429,27 @@ export default function Playground({
             </>
           ) : (
             <>
-              <div className="preview-header" style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.1)' }}>
+              <div className="preview-header" style={{ borderBottom: theme === 'light' ? '1px solid #e2e8f0' : '1px solid rgba(255, 255, 255, 0.1)' }}>
                 <span>Interactive Terminal Console</span>
               </div>
-              <div
-                style={{
-                  background: '#090d16',
-                  height: '100%',
-                  minHeight: '260px',
-                  padding: '16px',
-                  fontFamily: 'monospace',
-                  fontSize: '0.85rem',
-                  color: '#10b981',
-                  overflowY: 'auto',
-                  lineHeight: '1.6',
-                  whiteSpace: 'pre-wrap',
-                }}
-              >
-                {consoleOutput}
+              <div style={{ display: 'flex', flexDirection: 'column', height: '100%', flex: 1 }}>
+                <div
+                  style={{
+                    flex: 1,
+                    background: theme === 'light' ? '#f8fafc' : '#090d16',
+                    minHeight: '200px',
+                    padding: '16px',
+                    fontFamily: 'monospace',
+                    fontSize: '0.85rem',
+                    color: theme === 'light' ? '#0f172a' : '#10b981',
+                    borderTop: theme === 'light' ? '1px solid #e2e8f0' : 'none',
+                    overflowY: 'auto',
+                    lineHeight: '1.6',
+                    whiteSpace: 'pre-wrap',
+                  }}
+                >
+                  {consoleOutput}
+                </div>
               </div>
             </>
           )}

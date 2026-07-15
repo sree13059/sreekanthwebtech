@@ -52,6 +52,27 @@ export default function Footer({ setCurrentTab }) {
               </svg>
             </a>
           </div>
+          
+          <div className="footer-contact-details">
+            <a href="mailto:sree13049@gmail.com" className="footer-contact-item" title="Send Email">
+              <span className="footer-contact-icon">✉️</span>
+              <span className="footer-contact-value">sree13049@gmail.com</span>
+            </a>
+            <a href="tel:+916281762361" className="footer-contact-item" title="Call Me">
+              <span className="footer-contact-icon">📞</span>
+              <span className="footer-contact-value">+91 6281762361</span>
+            </a>
+            <a
+              href="https://sreekanthportfolio7373.vercel.app/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="footer-contact-item portfolio-link"
+              title="Visit Portfolio"
+            >
+              <span className="footer-contact-icon">🌐</span>
+              <span className="footer-contact-value">Visit Portfolio Website</span>
+            </a>
+          </div>
         </div>
 
         <div className="footer-links-grid">

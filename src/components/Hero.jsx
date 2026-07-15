@@ -333,6 +333,30 @@ export default function Hero({ setCurrentTab }) {
             </a>
           ))}
         </div>
+
+        {/* Watch Some More Videos CTA Banner */}
+        <div className="watch-more-wrapper">
+          <a
+            href="https://youtube.com/@sreekanthwebtech?si=jjYEFg5JWY5stBi9"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="watch-more-cta-card glass glass-hover"
+          >
+            <div className="watch-more-info">
+              <span className="watch-more-tag">YouTube Channel</span>
+              <h3>Watch Some More Videos</h3>
+              <p>Explore hours of tutorials, MERN stack guide projects, tips & tricks on our channel.</p>
+            </div>
+            <div className="watch-more-action">
+              <div className="watch-more-youtube-icon animate-pulse-light">
+                <svg viewBox="0 0 24 24" fill="currentColor" width="28" height="28">
+                  <path d="M23.498 6.163a3.003 3.003 0 0 0-2.11-2.11C19.518 3.545 12 3.545 12 3.545s-7.518 0-9.388.507a3.003 3.003 0 0 0-2.11 2.11C0 8.033 0 12 0 12s0 3.967.502 5.837a3.003 3.003 0 0 0 2.11 2.11c1.87.507 9.388.507 9.388.507s7.518 0 9.388-.507a3.003 3.003 0 0 0 2.11-2.11C24 15.967 24 12 24 12s0-3.967-.502-5.837zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
+                </svg>
+              </div>
+              <span className="watch-more-btn-text">Visit Channel →</span>
+            </div>
+          </a>
+        </div>
       </section>
 
       {/* Testimonials Review Slider */}
@@ -354,6 +378,64 @@ export default function Hero({ setCurrentTab }) {
               </div>
             </div>
           ))}
+        </div>
+      </section>
+
+      {/* Meet the Creator / Connect with Me Section */}
+      <section className="creator-profile-section glass">
+        <div className="creator-container">
+          <div className="creator-info-side">
+            <span className="section-label">Creator & Instructor</span>
+            <h2>Sreekanth</h2>
+            <p className="creator-title">Full Stack Developer & Educator</p>
+            <p className="creator-bio">
+              Welcome! I'm Sreekanth, the developer and educator behind Sreekanth WebTech. I design modern architectures, build clean-code web applications, and create structured courses to help you master full-stack engineering. Check out my portfolio to explore my developer journey!
+            </p>
+            <a
+              href="https://sreekanthportfolio7373.vercel.app/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="creator-portfolio-btn"
+            >
+              <span>Visit My Portfolio</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" width="16" height="16">
+                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                <polyline points="15 3 21 3 21 9" />
+                <line x1="10" y1="14" x2="21" y2="3" />
+              </svg>
+            </a>
+          </div>
+
+          <div className="creator-contact-side">
+            <h3>Get In Touch</h3>
+            <p>Do you have any queries about our courses, need career advice, or want to collaborate? Contact me directly!</p>
+            
+            <div className="contact-cards-list">
+              <a href="tel:+916281762361" className="contact-card glass glass-hover">
+                <div className="contact-card-icon phone">📞</div>
+                <div className="contact-card-details">
+                  <span className="contact-label">Call or WhatsApp</span>
+                  <span className="contact-value">+91 6281762361</span>
+                </div>
+              </a>
+
+              <a href="mailto:sree13049@gmail.com" className="contact-card glass glass-hover">
+                <div className="contact-card-icon email">✉️</div>
+                <div className="contact-card-details">
+                  <span className="contact-label">Send Email</span>
+                  <span className="contact-value">sree13049@gmail.com</span>
+                </div>
+              </a>
+
+              <a href="https://sreekanthportfolio7373.vercel.app/" target="_blank" rel="noopener noreferrer" className="contact-card glass glass-hover">
+                <div className="contact-card-icon portfolio">🌐</div>
+                <div className="contact-card-details">
+                  <span className="contact-label">Portfolio Website</span>
+                  <span className="contact-value">sreekanthportfolio7373.vercel.app</span>
+                </div>
+              </a>
+            </div>
+          </div>
         </div>
       </section>
 

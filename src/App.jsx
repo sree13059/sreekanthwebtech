@@ -9,7 +9,10 @@ import { coursesData } from './data/coursesData';
 import './App.css';
 
 function App() {
-  const [currentTab, setCurrentTab] = useState('home');
+  const [currentTab, setCurrentTab] = useState(() => {
+    const hash = window.location.hash.replace('#', '');
+    return hash || 'home';
+  });
   const [lessonIndices, setLessonIndices] = useState({
     html: 0,
     css: 0,
@@ -19,6 +22,26 @@ function App() {
     
     mongodb: 0,
   });
+
+  // Sync state when hash changes (browser back/forward buttons)
+  useEffect(() => {
+    const handleHashChange = () => {
+      const hash = window.location.hash.replace('#', '');
+      setCurrentTab(hash || 'home');
+    };
+
+    window.addEventListener('hashchange', handleHashChange);
+    return () => window.removeEventListener('hashchange', handleHashChange);
+  }, []);
+
+  // Update hash when tab changes
+  const changeTab = (tabId) => {
+    if (tabId === 'home') {
+      window.location.hash = '';
+    } else {
+      window.location.hash = tabId;
+    }
+  };
 
   // Automatically scroll to the top of the viewport when changing pages
   useEffect(() => {
@@ -37,20 +60,20 @@ function App() {
   return (
     <div className="app-shell">
       {/* Dynamic Header Navbar */}
-      <Navbar currentTab={currentTab} setCurrentTab={setCurrentTab} />
+      <Navbar currentTab={currentTab} setCurrentTab={changeTab} />
 
       {/* Main Content Layout Switcher */}
       <main style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
         {currentTab === 'home' && (
-          <Hero setCurrentTab={setCurrentTab} />
+          <Hero setCurrentTab={changeTab} />
         )}
 
         {currentTab === 'roadmap' && (
-          <RoadmapSection setCurrentTab={setCurrentTab} />
+          <RoadmapSection setCurrentTab={changeTab} />
         )}
 
         {currentTab === 'interview' && (
-          <InterviewPrep />
+          <InterviewPrep onBackHome={() => changeTab('home')} />
         )}
 
         {isCourseTab && coursesData[currentTab] && (
@@ -59,13 +82,13 @@ function App() {
             lessons={coursesData[currentTab].lessons}
             activeIndex={lessonIndices[currentTab]}
             setActiveIndex={(idx) => setLessonIndexForCourse(currentTab, idx)}
-            onBackHome={() => setCurrentTab('home')}
+            onBackHome={() => changeTab('home')}
           />
         )}
       </main>
 
       {/* Dynamic Footer Layout */}
-      <Footer setCurrentTab={setCurrentTab} />
+      <Footer setCurrentTab={changeTab} />
     </div>
   );
 }
